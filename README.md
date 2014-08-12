@@ -1,8 +1,7 @@
 email_bar
 =========
 
-Tool to display unread emails from Maildir format to conky, i3status, etc..
-
+Tool to display unread emails from maildir format to conky, i3status, etc..
 
 
 Account name is specified in the configuration, which has the "path" option.
