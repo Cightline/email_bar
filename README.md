@@ -18,6 +18,5 @@ The configuration should be kept at ```~/.config/email_bar.cfg```
 
 Installation:
 ```
-chmod +x email_bar.py
-cp email_bar.py /usr/bin/email_bar
+./install.sh
 ```
