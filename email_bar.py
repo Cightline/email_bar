@@ -5,6 +5,8 @@ import configparser
 import argparse
 
 from mailbox import MaildirMessage
+from mailbox import MMDFMessage
+from mailbox import Maildir
 
 config    = configparser.ConfigParser()
 config_mailboxes = {}
@@ -28,25 +30,13 @@ else:
 
 def check_unread(mailboxes):
     for mailbox in mailboxes:
-        m = ['cur','new']
-    
-        base_path = '%s/INBOX' % (config.get(mailbox, 'path'))
 
+        maildir = Maildir(config.get(mailbox, 'path'))
 
-        full_paths = ['%s/cur' % (base_path), '%s/new' % (base_path)]
+        for mail in maildir:
+            if 'S' not in mail.get_flags():
+                config_mailboxes[mailbox] += 1
 
-    
-        for path in full_paths:
-            for mail in os.listdir(path):
-                try:
-                    with open('%s/%s' % (path, mail)) as msg_file:
-                        msg = MaildirMessage(msg_file.read())
-                        if 'S' not in msg.get_flags():
-                            config_mailboxes[mailbox] += 1
-
-                except Exception as e:
-                    #print('[error] %s' % (e))
-                    pass
 
 check_unread(config_mailboxes)
 
