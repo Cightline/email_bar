@@ -1,19 +1,17 @@
-#!/bin/python
+#!/bin/python3
 
-import os
-import configparser
-import argparse
+from argparse import ArgumentParser
+from configparser import ConfigParser
+from os.path import expanduser
+from mailbox import MaildirMessage, Maildir
 
-from mailbox import MaildirMessage
-from mailbox import MMDFMessage
-from mailbox import Maildir
 
-config    = configparser.ConfigParser()
+config    = ConfigParser()
 config_mailboxes = {}
 
-config.read(os.path.expanduser('~/.config/email_bar.cfg'))
+config.read(expanduser('~/.config/email_bar.cfg'))
 
-parser = argparse.ArgumentParser()
+parser = ArgumentParser()
 parser.add_argument('--only',     help='only check specified mailbox', action='store')
 parser.add_argument('--no-title', help='do not display the title', action='store_true')
 
@@ -28,25 +26,23 @@ else:
         config_mailboxes[mailbox] = 0
 
 
-def check_unread(mailboxes):
-    for mailbox in mailboxes:
 
-        maildir = Maildir(config.get(mailbox, 'path'))
+# Iter through and see what has not been read
+for mailbox in config_mailboxes:
 
-        for mail in maildir:
-            if 'S' not in mail.get_flags():
-                config_mailboxes[mailbox] += 1
+    maildir = Maildir(config.get(mailbox, 'path'))
 
+    for mail in maildir:
+        if 'S' not in mail.get_flags():
+            config_mailboxes[mailbox] += 1
 
-check_unread(config_mailboxes)
 
 for mailbox in config_mailboxes.keys():
     if args.no_title:
         print(config_mailboxes[mailbox])
-
     
     else:
-        print("%s: %s " % (mailbox, config_mailboxes[mailbox]), end="")
+        print("%s: %s " % (mailbox, config_mailboxes[mailbox]))
 
 
 
